@@ -44,7 +44,7 @@ public class SarTargetGraphic extends TargetGraphic {
 //    private boolean warningIssued;
 
     @Override
-    public void update(AisTarget aisTarget, AisSettings aisSettings, NavSettings navSettings) {
+    public void update(AisTarget aisTarget, AisSettings aisSettings, NavSettings navSettings, float mapScale) {
         sarTarget = (SarTarget) aisTarget;
         VesselPositionData posData = sarTarget.getPositionData();
         // VesselStaticData staticData = sarTarget.getStaticData();

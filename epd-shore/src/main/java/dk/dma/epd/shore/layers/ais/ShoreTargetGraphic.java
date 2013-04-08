@@ -22,28 +22,28 @@ import java.util.List;
 
 import com.bbn.openmap.omGraphics.OMCircle;
 import com.bbn.openmap.omGraphics.OMGraphicConstants;
-import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMLine;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 
 import dk.dma.ais.message.AisMessage;
+import dk.dma.epd.common.prototype.ais.AisTarget;
+import dk.dma.epd.common.prototype.ais.VesselPositionData;
 import dk.dma.epd.common.prototype.ais.VesselStaticData;
 import dk.dma.epd.common.prototype.ais.VesselTarget;
 import dk.dma.epd.common.prototype.ais.VesselTargetSettings;
 import dk.dma.epd.common.prototype.enavcloud.CloudIntendedRoute;
 import dk.dma.epd.common.prototype.layers.ais.IntendedRouteGraphic;
+import dk.dma.epd.common.prototype.layers.ais.TargetGraphic;
+import dk.dma.epd.common.prototype.settings.AisSettings;
+import dk.dma.epd.common.prototype.settings.NavSettings;
 import dk.dma.epd.common.text.Formatter;
 import dk.dma.epd.shore.ais.PastTrackPoint;
 
-/**
- * Vessel class that maintains all the components in a vessel
- *
- * @author Claes N. Ladefoged, claesnl@gmail.com
- *
- */
-public class Vessel extends OMGraphicList {
+public class ShoreTargetGraphic extends TargetGraphic {
+
     private static final long serialVersionUID = 1L;
     private VesselLayer vessel;
     private OMCircle vesCirc;
@@ -71,6 +71,15 @@ public class Vessel extends OMGraphicList {
     private IntendedRouteGraphic routeGraphic = new IntendedRouteGraphic();
     private VesselTarget vesselTarget;
     private PastTrackGraphic pastTrackGraphic = new PastTrackGraphic();
+    
+    private boolean showNameLabel;
+    
+    
+    public ShoreTargetGraphic(boolean showName) {
+        super();
+        this.showNameLabel = showName;
+    }
+    
 
     /**
      * Vessel initialization with icon, circle, heading, speedvector, callsign
@@ -80,12 +89,12 @@ public class Vessel extends OMGraphicList {
      *            Key of vessel
      * @param staticImages
      */
-    public Vessel(long MMSI) {
+    public ShoreTargetGraphic(long MMSI) {
         super();
         this.MMSI = MMSI;
 
         // Vessel layer
-//        vessel = new VesselLayer(MMSI, this);
+        vessel = new VesselLayer(MMSI, this);
 
         // Vessel circle layer
         vesCirc = new OMCircle(0, 0, 0.01);
@@ -118,6 +127,14 @@ public class Vessel extends OMGraphicList {
         this.add(pastTrackGraphic);
         pastTrackGraphic.setMmsi(MMSI);
     }
+
+    
+    
+    public IntendedRouteGraphic getRouteGraphic() {
+        return routeGraphic;
+    }
+
+
 
     /**
      * Updates all the vessel layers with position, data and heading where
@@ -344,6 +361,163 @@ public class Vessel extends OMGraphicList {
 
     public VesselTarget getVesselTarget() {
         return vesselTarget;
+    }
+
+    @Override
+    public void update(AisTarget aisTarget, AisSettings aisSettings,
+            NavSettings navSettings, float mapScale) {
+
+        if (aisTarget instanceof VesselTarget) {
+            
+            
+            if (size() == 0) {
+                createGraphics(aisTarget.getMmsi());
+            }
+
+            vesselTarget = (VesselTarget) aisTarget;
+            VesselPositionData posData = vesselTarget.getPositionData();
+            VesselStaticData staticData = vesselTarget.getStaticData();
+            VesselTargetSettings targetSettings = vesselTarget.getSettings();
+
+            vessel.setLocation(posData.getPos().getLatitude(), posData.getPos().getLongitude());
+            
+            if (posData.getTrueHeading() == 511){
+                vessel.setHeading(posData.getCog());                
+            }else{
+                vessel.setHeading(posData.getTrueHeading());
+            }
+            
+
+
+            
+            
+            heading.setLocation(posData.getPos().getLatitude(), posData.getPos().getLongitude(), OMGraphicConstants.DECIMAL_DEGREES, Math.toRadians(trueHeading));
+            vesselHeading = Integer.toString((int) Math.round(posData.getTrueHeading())) + "°";
+
+            vesselName = "ID:" + this.MMSI;
+            if (staticData != null) {
+                vessel.setImageIcon(staticData.getShipType().toString());
+                callSign.setData("Call Sign: " + staticData.getCallsign());
+                vesselCallSign = AisMessage.trimText(staticData.getCallsign());
+                vesselName = AisMessage.trimText(staticData.getName());
+                vesselDest = staticData.getDestination();
+                vesselEta = Long.toString(staticData.getEta());
+                vesselShiptype = staticData.getShipType().toString();
+
+            }
+            nameMMSI.setData(vesselName);
+
+            if (this.lat != posData.getPos().getLatitude() || this.lon != posData.getPos().getLongitude() || this.sog != posData.getSog() || this.cogR != Math.toRadians(posData.getCog())
+                    || this.trueHeading != posData.getTrueHeading()) {
+                this.lat = posData.getPos().getLatitude();
+                this.lon = posData.getPos().getLongitude();
+                this.sog = posData.getSog();
+                this.cogR = Math.toRadians(posData.getCog());
+                this.trueHeading = posData.getTrueHeading();
+
+                vesCirc.setLatLon(lat, lon);
+
+                callSign.setLat(lat);
+                callSign.setLon(lon);
+                if (trueHeading > 90 && trueHeading < 270) {
+                    callSign.setY(-25);
+                } else {
+                    callSign.setY(35);
+                }
+
+                double[] speedLL = new double[4];
+                speedLL[0] = (float) lat;
+                speedLL[1] = (float) lon;
+                startPos = new LatLonPoint.Double(lat, lon);
+                float length = (float) Length.NM.toRadians(6.0 * (sog / 60.0));
+                endPos = startPos.getPoint(length, cogR);
+                speedLL[2] = endPos.getLatitude();
+                speedLL[3] = endPos.getLongitude();
+                speedVector.setLL(speedLL);
+
+                nameMMSI.setLat(lat);
+                nameMMSI.setLon(lon);
+                if (trueHeading > 90 && trueHeading < 270) {
+                    nameMMSI.setY(-10);
+                } else {
+                    nameMMSI.setY(20);
+                }
+
+
+                CloudIntendedRoute aisIntendedRoute = vesselTarget.getIntendedRoute();
+
+
+                // Intended route graphic
+                routeGraphic.update(vesselTarget, vesselName, aisIntendedRoute, vesselTarget.getPositionData().getPos());
+                if (!targetSettings.isShowRoute()) {
+                    routeGraphic.setVisible(false);
+                }
+
+            }
+
+            // Scale for text-labels
+            boolean b1 = mapScale < 750000;
+            showHeading(b1);
+            showSpeedVector(b1);
+            showCallSign(false);
+            showName(b1);
+            // Scale for ship icons
+            boolean b2 = mapScale < 1500000;
+            showVesselIcon(b2);
+            showVesselCirc(!b2);
+        }
+        
+
+
+
+      
+        
+    }
+
+    private void createGraphics(long MMSI) {
+        this.MMSI = MMSI;
+
+        // Vessel layer
+        vessel = new VesselLayer(MMSI, this);
+
+        // Vessel circle layer
+        vesCirc = new OMCircle(0, 0, 0.01);
+        vesCirc.setFillPaint(shipColor);
+
+        // Heading layer
+        heading = new HeadingLayer(MMSI, new int[] { 0, 0 }, new int[] { 0, -30 });
+        heading.setFillPaint(new Color(0, 0, 0));
+
+        // Speed vector layer
+        speedVector = new OMLine(0, 0, 0, 0, OMGraphicConstants.LINETYPE_STRAIGHT);
+        speedVector.setStroke(new BasicStroke(STROKE_WIDTH, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f,
+                new float[] { 10.0f, 8.0f }, 0.0f));
+        speedVector.setLinePaint(new Color(255, 0, 0));
+
+        // Call sign layer
+        callSign = new OMText(0, 0, 0, 0, "", font, OMText.JUSTIFY_CENTER);
+
+        // MSI / Name layer
+        nameMMSI = new OMText(0, 0, 0, 0, Long.toString(MMSI), font, OMText.JUSTIFY_CENTER);
+
+        this.add(vessel);
+        this.add(vesCirc);
+        this.add(heading);
+        this.add(speedVector);
+        this.add(callSign);
+        this.add(nameMMSI);
+
+        this.add(routeGraphic);
+        this.add(pastTrackGraphic);
+        pastTrackGraphic.setMmsi(MMSI);
+    }
+
+
+    @Override
+    public void setMarksVisible(Projection projection, AisSettings aisSettings,
+            NavSettings navSettings) {
+        // TODO Auto-generated method stub
+        
     }
 
 

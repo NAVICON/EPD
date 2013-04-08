@@ -36,21 +36,23 @@ public class VesselLayer extends CenterRaster {
     private double trueHeading;
     private String shipType;
     private StaticImages staticImages;
-    private Vessel vessel;
+    private ShoreTargetGraphic vessel;
 
     /**
      * Initialize a vessel with default icon
      * @param MMSI Key of vessel
-     * @param vessel
+     * @param shoreTargetGraphic
      */
-    public VesselLayer(long MMSI, Vessel vessel) {
+    public VesselLayer(long MMSI, ShoreTargetGraphic shoreTargetGraphic) {
         super(0, 0, 24, 24, EPDShore.getStaticImages().getVesselWhite());
         this.staticImages = EPDShore.getStaticImages();
         this.MMSI = MMSI;
 
-        this.vessel = vessel;
+        this.vessel = shoreTargetGraphic;
     }
 
+    
+    
     /**
      * Rotates vessel icon
      * @param trueHeading Direction of vessel icon
@@ -64,7 +66,7 @@ public class VesselLayer extends CenterRaster {
 
 
 
-    public Vessel getVessel() {
+    public ShoreTargetGraphic getVessel() {
         return vessel;
     }
 
