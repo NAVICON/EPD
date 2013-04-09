@@ -305,7 +305,10 @@ public class AisLayer extends OMGraphicHandlerLayer implements
                 forceRedraw = true;
             }
 
-            targetGraphic.update(vesselTarget, aisSettings, navSettings, mapBean.getScale());
+            if (mapBean != null){
+                targetGraphic.update(vesselTarget, aisSettings, navSettings, mapBean.getScale());    
+            }
+            
 
             if (vesselTarget.getMmsi() == selectedMMSI) {
                 updateSelection(aisTarget, false);
@@ -392,6 +395,9 @@ public class AisLayer extends OMGraphicHandlerLayer implements
 
     @Override
     public void findAndInit(Object obj) {
+        if (obj instanceof MapBean) {
+            mapBean = (MapBean) obj;
+        }
         if (obj instanceof AisComponentPanel) {
             aisPanel = (AisComponentPanel) obj;
         }
@@ -401,9 +407,6 @@ public class AisLayer extends OMGraphicHandlerLayer implements
         if (obj instanceof AisHandler) {
             aisHandler = (AisHandler) obj;
             aisHandler.addListener(this);
-        }
-        if (obj instanceof MapBean) {
-            mapBean = (MapBean) obj;
         }
         if (obj instanceof MainFrame) {
             mainFrame = (MainFrame) obj;

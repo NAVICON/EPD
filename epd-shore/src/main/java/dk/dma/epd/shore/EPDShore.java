@@ -47,6 +47,7 @@ import dk.dma.epd.shore.ais.AisHandler;
 import dk.dma.epd.shore.gps.GpsHandler;
 import dk.dma.epd.shore.gui.utils.StaticImages;
 import dk.dma.epd.shore.gui.views.MainFrame;
+import dk.dma.epd.shore.layers.ais.AisLayerHandler;
 import dk.dma.epd.shore.msi.MsiHandler;
 import dk.dma.epd.shore.route.RouteManager;
 import dk.dma.epd.shore.service.EnavServiceHandler;
@@ -76,6 +77,7 @@ public class EPDShore {
     private static AisHandler aisHandler;
     private static GpsHandler gpsHandler;
     private static MsiHandler msiHandler;
+    private static AisLayerHandler aisLayerHandler;
     private static AisServices aisServices;
     private static AisReader aisReader;
     private static ShoreServices shoreServices;
@@ -180,6 +182,12 @@ public class EPDShore {
         msiHandler = new MsiHandler(getSettings().getEnavSettings());
         beanHandler.add(msiHandler);
 
+        
+        // Create AisLayerHAndler
+        aisLayerHandler = new AisLayerHandler();
+        beanHandler.add(aisLayerHandler);
+        
+        
         createPluginComponents();
 
         // Create and show GUI
@@ -252,6 +260,12 @@ public class EPDShore {
 
         LOG.info("Closing ESD");
         System.exit(restart ? 2 : 0);
+    }
+    
+    
+
+    public static AisLayerHandler getAisLayerHandler() {
+        return aisLayerHandler;
     }
 
     /**

@@ -72,12 +72,12 @@ public class ShoreTargetGraphic extends TargetGraphic {
     private VesselTarget vesselTarget;
     private PastTrackGraphic pastTrackGraphic = new PastTrackGraphic();
     
-    private boolean showNameLabel;
+//    private boolean showNameLabel;
     
     
     public ShoreTargetGraphic(boolean showName) {
         super();
-        this.showNameLabel = showName;
+//        this.showNameLabel = showName;
     }
     
 
@@ -517,6 +517,21 @@ public class ShoreTargetGraphic extends TargetGraphic {
     public void setMarksVisible(Projection projection, AisSettings aisSettings,
             NavSettings navSettings) {
         // TODO Auto-generated method stub
+        
+    }
+
+
+    public void update(float scale) {
+        // Scale for text-labels
+        boolean b1 = scale < 750000;
+        showHeading(b1);
+        showSpeedVector(b1);
+        showCallSign(false);
+        showName(b1);
+        // Scale for ship icons
+        boolean b2 = scale < 1500000;
+        showVesselIcon(b2);
+        showVesselCirc(!b2);
         
     }
 

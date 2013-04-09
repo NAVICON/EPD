@@ -139,7 +139,7 @@ public class IntendedRouteGraphic extends OMGraphicList {
     public void update(VesselTarget vesselTarget, String name,
             CloudIntendedRoute cloudIntendedRoute, Position pos) {
 
-        
+
         // Set visible if not visible
         if (!isVisible()) {
             setVisible(true);
@@ -148,6 +148,9 @@ public class IntendedRouteGraphic extends OMGraphicList {
         
         if (cloudIntendedRoute != null){
 
+            System.out.println("Updating intended route graphics");
+            
+            
             long timeSinceRecieved = System.currentTimeMillis() - cloudIntendedRoute.getReceived().getTime();
             
 //            System.out.println(timeSinceRecieved);

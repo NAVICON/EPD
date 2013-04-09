@@ -33,16 +33,16 @@ public class AisInfoPanel extends InfoPanel {
 
     /**
      * Display a AIS info
-     * @param vessel
+     * @param shoreTargetGraphic
      */
-    public void showAisInfo(Vessel vessel) {
+    public void showAisInfo(ShoreTargetGraphic shoreTargetGraphic) {
         String aisText = "<HTML>";
-        if(!vessel.getName().equals("N/A")) {
-            aisText += vessel.getName() + " ("+vessel.getMMSI() + ")";
+        if(!shoreTargetGraphic.getName().equals("N/A")) {
+            aisText += shoreTargetGraphic.getName() + " ("+shoreTargetGraphic.getMMSI() + ")";
         } else {
-            aisText += vessel.getMMSI();
+            aisText += shoreTargetGraphic.getMMSI();
         }
-        aisText += "<BR/>COG "+vessel.getHeading()+"° SOG "+vessel.getSog()+" kn";
+        aisText += "<BR/>COG "+shoreTargetGraphic.getHeading()+"° SOG "+shoreTargetGraphic.getSog()+" kn";
         aisText += "</HTML>";
         showText(aisText);
     }

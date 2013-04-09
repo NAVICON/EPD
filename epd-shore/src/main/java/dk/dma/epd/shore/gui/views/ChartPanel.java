@@ -213,6 +213,7 @@ public class ChartPanel extends OMComponentPanel {
     }
 
     public void forceAisLayerUpdate() {
+        System.out.println("Force update");
         aisLayer.getAisThread().interrupt();
     }
 
@@ -411,6 +412,8 @@ public class ChartPanel extends OMComponentPanel {
         aisLayer = new AisLayer();
         aisLayer.setVisible(true);
         mapHandler.add(aisLayer);
+        
+        map.addProjectionListener(aisLayer);
 
         // Add MSI Layer
         msiLayer = new MsiLayer();
@@ -433,6 +436,9 @@ public class ChartPanel extends OMComponentPanel {
         // Create MSI handler
         msiHandler = EPDShore.getMsiHandler();
         mapHandler.add(msiHandler);
+        
+        // Get AisLayerHandler
+        mapHandler.add(EPDShore.getAisLayerHandler());
 
         // Create background layer
         String layerName = "background";

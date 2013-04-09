@@ -89,7 +89,7 @@ public class MainFrame extends JFrame implements WindowListener {
 
     private StatusArea statusArea = new StatusArea(this);
     private JMapFrame activeMapWindow;
-    private long selectedMMSI = -1;
+
 
     /**
      * Constructor
@@ -658,19 +658,6 @@ public class MainFrame extends JFrame implements WindowListener {
     public JSettingsWindow getSettingsWindow() {
         return settingsWindow;
     }
-
-    public synchronized long getSelectedMMSI() {
-        return selectedMMSI;
-    }
-
-    public synchronized void setSelectedMMSI(long selectedMMSI) {
-        this.selectedMMSI = selectedMMSI;
-        for (int i = 0; i < mapWindows.size(); i++) {
-            mapWindows.get(i).getChartPanel().forceAisLayerUpdate();
-        }
-    }
-
-
 
     public SendRouteDialog getSendRouteDialog() {
         return sendRouteDialog;
