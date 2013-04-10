@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +92,7 @@ public class AisHandler extends MapHandlerChild implements IAisListener,
     protected Map<Long, VesselTarget> vesselTargets = new HashMap<Long, VesselTarget>();
     protected Map<Long, List<PastTrackPoint>> pastTrack = new HashMap<Long, List<PastTrackPoint>>();
     protected Map<Long, SarTarget> sarTargets = new HashMap<Long, SarTarget>();
-    protected List<IAisTargetListener> listeners = new ArrayList<IAisTargetListener>();
+    protected List<IAisTargetListener> listeners = new CopyOnWriteArrayList<IAisTargetListener>();
 
     private List<IAisRouteSuggestionListener> suggestionListeners = new ArrayList<>();
     private VesselTarget ownShip = new VesselTarget();
@@ -378,7 +379,7 @@ public class AisHandler extends MapHandlerChild implements IAisListener,
      * 
      * @param aisTarget
      */
-    public synchronized void publishUpdate(AisTarget aisTarget) {
+    public void publishUpdate(AisTarget aisTarget) {
         for (IAisTargetListener listener : listeners) {
             listener.targetUpdated(aisTarget);
         }
