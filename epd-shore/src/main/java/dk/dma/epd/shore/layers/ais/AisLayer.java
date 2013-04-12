@@ -152,7 +152,7 @@ public class AisLayer extends OMGraphicHandlerLayer implements
                 }
             } catch (InterruptedException e) {
                 System.out.println("Updating from interrupt");
-//                updateIcons();
+                // updateIcons();
             }
         }
         aisLayerHandler.removeSelectionListener(this);
@@ -210,8 +210,10 @@ public class AisLayer extends OMGraphicHandlerLayer implements
         } else {
             for (TargetGraphic vessel : targets.values()) {
 
-                ((ShoreTargetGraphic) vessel).getPastTrackGraphic().setVisible(
-                        false);
+                if (vessel instanceof ShoreTargetGraphic) {
+                    ((ShoreTargetGraphic) vessel).getPastTrackGraphic()
+                            .setVisible(false);
+                }
             }
 
         }
@@ -826,13 +828,15 @@ public class AisLayer extends OMGraphicHandlerLayer implements
         } else {
             for (TargetGraphic vessel : targets.values()) {
 
+                if (vessel instanceof ShoreTargetGraphic){
                 ((ShoreTargetGraphic) vessel).getPastTrackGraphic().setVisible(
                         false);
+                }
             }
 
             updateSelection(aisHandler.getTarget(mmsi));
 
-            if (aisHandler.getPastTrack().get(mmsi) != null) {
+            if (aisHandler.getPastTrack().get(mmsi) != null && aisHandler.getPastTrack().get(mmsi) != null) {
                 ((ShoreTargetGraphic) targets.get(mmsi))
                         .updatePastTrack(aisHandler.getPastTrack().get(mmsi));
             }
