@@ -13,12 +13,12 @@
 	<version>3.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>EPD Parent</name>
-	<description>eNavigation Prototype Display parent module</description>
+	<description>eNavigation Prototype Display parent module, NAVICON branch</description>
 
 	<scm>
-		<connection>scm:git:git@github.com:dma-enav/EPD.git</connection>
-		<developerConnection>scm:git:git@github.com:dma-enav/EPD.git</developerConnection>
-		<url>https://github.com/dma-enav/EPD</url>
+		<connection>scm:git:git@github.com:NAVICON/EPD.git</connection>
+		<developerConnection>scm:git:git@github.com:NAVICON/EPD.git</developerConnection>
+		<url>https://github.com/NAVICON/EPD</url>
 	</scm>
 
 	<dependencies>
