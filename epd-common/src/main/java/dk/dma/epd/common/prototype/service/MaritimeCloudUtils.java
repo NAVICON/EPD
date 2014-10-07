@@ -82,7 +82,7 @@ public class MaritimeCloudUtils {
 	 *            the maritime id to extract the MMSI from
 	 * @return the MMSI or null, if none can be extracted
 	 */
-	public static Integer toMmsi(MaritimeId id) {
+	public static int toMmsi(MaritimeId id) {
 		if (id == null || !(id instanceof MmsiId)) {
 			return 0;
 		}
