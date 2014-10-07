@@ -20,19 +20,17 @@ import dk.dma.epd.common.prototype.model.route.Route;
 
 public class RouteRequestMetoc extends RouteMenuItem {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public RouteRequestMetoc(String text) {
-        super();
-        setText(text);
-    }
+	public RouteRequestMetoc(String text) {
+		super();
+		setText(text);
+	}
 
-    @Override
-    public void doAction() {
-        Route route = EPD.getInstance().getRouteManager().getRoute(routeIndex);
-        MetocRequestDialog.requestMetoc(
-                EPD.getInstance().getMainFrame(), 
-                EPD.getInstance().getRouteManager(), 
-                route);        
-    }
+	@Override
+	public void doAction() {
+		Route route = EPD.getInstance().getRouteManager().getRoute(routeIndex);
+		MetocRequestDialog.requestMetoc(EPD.getInstance().getMainFrame(), EPD
+				.getInstance().getRouteManager(), route);
+	}
 }

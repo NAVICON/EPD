@@ -47,7 +47,7 @@ import com.bbn.openmap.LightMapHandlerChild;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.gui.WindowSupport;
 
-import dk.dma.ais.virtualnet.transponder.gui.TransponderFrame;
+//import dk.dma.ais.virtualnet.transponder.gui.TransponderFrame;
 import dk.dma.epd.common.prototype.EPD;
 import dk.dma.epd.common.prototype.msi.MsiHandler;
 import dk.dma.epd.ship.EPDShip;
@@ -71,7 +71,7 @@ public class MenuBar extends JMenuBar implements PropertyConsumer, BeanContextCh
     TopPanel topPanel;
     NogoHandler nogoHandler;
     MsiHandler msiHandler;
-    TransponderFrame transponderFrame;
+    //TransponderFrame transponderFrame;
 
     JCheckBoxMenuItem lock;
     private JCheckBoxMenuItem autoFollow;
@@ -125,7 +125,7 @@ public class MenuBar extends JMenuBar implements PropertyConsumer, BeanContextCh
         });
 
         setup.setIcon(toolbarIcon("images/toolbar/wrench.png"));
-
+	/*
         JMenuItem transponder = new JMenuItem("Transponder");
         file.add(transponder);
         // transponder.setIcon(toolbarIcon("images/toolbar/transponder.png"));
@@ -137,7 +137,7 @@ public class MenuBar extends JMenuBar implements PropertyConsumer, BeanContextCh
                 }
             }
         });
-
+	*/
         JMenuItem exit = new JMenuItem("Exit");
         file.add(exit);
         exit.setIcon(toolbarIcon("images/toolbar/cross-circle.png"));
@@ -606,9 +606,11 @@ public class MenuBar extends JMenuBar implements PropertyConsumer, BeanContextCh
         if (obj instanceof MsiHandler) {
             msiHandler = (MsiHandler) obj;
         }
+	/*
         if (obj instanceof TransponderFrame) {
             transponderFrame = (TransponderFrame) obj;
         }
+	*/
     }
 
     @Override

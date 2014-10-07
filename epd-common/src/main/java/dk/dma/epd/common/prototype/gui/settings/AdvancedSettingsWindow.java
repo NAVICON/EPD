@@ -27,77 +27,76 @@ import javax.swing.JTabbedPane;
 import dk.dma.epd.common.prototype.EPD;
 
 public class AdvancedSettingsWindow extends JDialog {
-    
-    private static final long serialVersionUID = 1L;
-    private CommonMapSettingsPanel parent;
-    
-    
-    public AdvancedSettingsWindow(CommonMapSettingsPanel parent) {
-        
-        super(EPD.getInstance().getMainFrame(), "Advanced Settings", true);
-        this.setBounds(100, 100, 500, 750);
-        this.setLocationRelativeTo(EPD.getInstance().getMainFrame());
-        this.parent = parent;
-        
-        try {
-            
-            /* Add a panel at the bottom the window with an "ok" which
-             * close and saves the panel.
-             */
-            JPanel panel = new JPanel();
-            getContentPane().add(panel, BorderLayout.SOUTH);
-            panel.setLayout(new BorderLayout(0, 0));
-            
-            JButton okBtn = new JButton("Ok");
-            okBtn.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent arg0) {
-                    //
-                    closeAndSave();
-                    
-                }
-            });
-            panel.add(okBtn, BorderLayout.EAST);
 
-            // Try to get the enc layer.
-            JTabbedPane gui = (JTabbedPane) 
-                    EPD.getInstance().getMainFrame().getActiveChartPanel().getEncLayer().getGUI();
-            gui.setVisible(true);
-            
-            // Remove unused tabs.
-            if (gui.getTabCount() > 1) {
-                gui.removeTabAt(1);
-                gui.removeTabAt(1);
-            }
-            
-            // Add gui to the panel.
-            this.getContentPane().add(gui);
-            
-        } catch (NullPointerException e) {
-            System.out.println("No enc layer found.");
-        }
-        
-        this.setVisible(true);
-    }
-    
-    /**
+	private static final long serialVersionUID = 1L;
+	private CommonMapSettingsPanel parent;
+
+	public AdvancedSettingsWindow(CommonMapSettingsPanel parent) {
+
+		super(EPD.getInstance().getMainFrame(), "Advanced Settings", true);
+		this.setBounds(100, 100, 500, 750);
+		this.setLocationRelativeTo(EPD.getInstance().getMainFrame());
+		this.parent = parent;
+
+		try {
+
+			/*
+			 * Add a panel at the bottom the window with an "ok" which close and
+			 * saves the panel.
+			 */
+			JPanel panel = new JPanel();
+			getContentPane().add(panel, BorderLayout.SOUTH);
+			panel.setLayout(new BorderLayout(0, 0));
+
+			JButton okBtn = new JButton("Ok");
+			okBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					//
+					closeAndSave();
+
+				}
+			});
+			panel.add(okBtn, BorderLayout.EAST);
+
+			// Try to get the enc layer.
+			JTabbedPane gui = (JTabbedPane) EPD.getInstance().getMainFrame()
+					.getActiveChartPanel().getEncLayer().getGUI();
+			gui.setVisible(true);
+
+			// Remove unused tabs.
+			if (gui.getTabCount() > 1) {
+				gui.removeTabAt(1);
+				gui.removeTabAt(1);
+			}
+
+			// Add gui to the panel.
+			this.getContentPane().add(gui);
+
+		} catch (NullPointerException e) {
+			System.out.println("No enc layer found.");
+		}
+
+		this.setVisible(true);
+	}
+
+	/**
      * 
      */
-    public void closeAndSave() {
-        Class<?> c;
-        try {
-            c = Class.forName("dk.navicon.s52.presentation.S52ViewingGroup");
-            Method m = c.getMethod("viewGrpSettingsAsString");
-            String result = (String) m.invoke(null);
+	public void closeAndSave() {
+		Class<?> c;
+		try {
+			c = Class.forName("dk.navicon.s52.presentation.S52ViewingGroup");
+			Method m = c.getMethod("viewGrpSettingsAsString");
+			String result = (String) m.invoke(null);
 
-            
+			// System.out.println(EPD.getInstance().getSettings().getS57Settings());
+			EPD.getInstance().getSettings().getS57Settings()
+					.setS52mapSettings(result);
+			parent.s57MapSettingsChanged();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-//            System.out.println(EPD.getInstance().getSettings().getS57Settings());
-            EPD.getInstance().getSettings().getS57Settings().setS52mapSettings(result);
-            parent.s57MapSettingsChanged();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        this.dispose();
-    }
+		this.dispose();
+	}
 }
